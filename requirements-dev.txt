@@ -1,0 +1,6 @@
+black==24.10.0
+isort==5.13.2
+mypy==1.12.0
+nbconvert==7.16.4
+notebook==7.2.2
+ruff==0.8.3
