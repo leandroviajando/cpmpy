@@ -14,7 +14,9 @@ pip install -r requirements.txt
 ### Generate PDFs
 
 ```bash
-jupyter nbconvert --to pdf *.ipynb
+mkdir -p pdfs && \
+  echo "*" > pdfs/.gitignore && \
+  jupyter nbconvert --to pdf --output-dir=pdfs session[1-6]*.ipynb
 ```
 
 ## [1. Declarative Modelling](./session1-modelling.ipynb)
@@ -41,20 +43,20 @@ jupyter nbconvert --to pdf *.ipynb
 
 ### 4.4. Implied Constraints
 
-## [5. Decompositions](./session5_a-decompositions-problem_aware-solver_aware.ipynb)
+## [5.1. Decompositions](./session5_a-decompositions-problem_aware-solver_aware.ipynb)
 
-### 5.1. Problem-Aware Decompositions
+### 5.1.1. Problem-Aware Decompositions
 
-### 5.2. Solver-Aware Decompositions
+### 5.1.2. Solver-Aware Decompositions
 
-### 5.3. Low-Level Modelling
+### 5.1.3. Low-Level Modelling
 
-## [6. Algorithm and Hyperparameter Selection and Configuration](./session5_b-algorithm_selection-algorithm_configuration-hyperparameter_configuration.ipynb)
+## [5.2. Algorithm and Hyperparameter Selection and Configuration](./session5_b-algorithm_selection-algorithm_configuration-hyperparameter_configuration.ipynb)
 
-### 6.1. Algorithm Selection
+### 5.2.1. Algorithm Selection
 
-### 6.2. Algorithm Configuration
+### 5.2.2. Algorithm Configuration
 
-### 6.3. Hyperparameter Configuration
+### 5.2.3. Hyperparameter Configuration
 
-## [7. Symmetry and Dominance Breaking](./session6-symmetry-dominance_breaking.ipynb)
+## [6. Symmetry and Dominance Breaking](./session6-symmetry-dominance_breaking.ipynb)
