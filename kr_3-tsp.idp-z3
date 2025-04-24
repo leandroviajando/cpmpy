@@ -1,0 +1,50 @@
+// IDP-Z3 FO(.) Knowledge Editor: https://interactive-consultant.idp-z3.be/IDE
+// Docs: https://docs.idp-z3.be/en/stable/
+// Cheat sheet: https://docs.idp-z3.be/en/stable/summary.html
+
+vocabulary V {
+    type Vertex
+    edge: Vertex * Vertex -> Bool
+    start: () ->  Vertex
+    next: Vertex -> Vertex
+    reachable: Vertex -> Bool
+}
+
+theory T:V {
+    // Must drive on roads.
+    ! v in Vertex: edge(v, next(v)).
+
+    // Must visit every city.
+    ! v in Vertex: reachable(v).
+
+    // Return to start.
+    ? v in Vertex: next(v) = start().
+
+    // Definition reachable:
+    {
+        reachable(start()).
+        ! v in Vertex: reachable(next(v)) <- reachable(v).
+    }
+}
+
+structure S:V {
+    Vertex := {A, B, C, D, E, F}.
+    start  := E.
+    edge := {
+          (A, B),
+          (A, C),
+          (B, C),
+          (C, F),
+          (D, E),
+          (C, E),
+          (E, D),
+          (D, F),
+          (F, A),
+          (B, D),
+          (F, B)
+    }.
+}
+
+procedure main() {
+    pretty_print(model_expand(T, S))
+}

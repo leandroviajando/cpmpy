@@ -1,0 +1,31 @@
+// IDP-Z3 FO(.) Knowledge Editor: https://interactive-consultant.idp-z3.be/IDE
+// Docs: https://docs.idp-z3.be/en/stable/
+// Cheat sheet: https://docs.idp-z3.be/en/stable/summary.html
+
+vocabulary V {
+    type Colour
+    type Node
+    edge: Node * Node -> Bool
+    colouring: Node -> Colour
+}
+
+theory T:V {
+    ! n1, n2 in Node: edge(n1, n2) => colouring(n1) ~= colouring(n2).
+}
+
+structure S:V{
+    Colour := {blue, red, green, yellow}.
+    Node := {A, B, C, D, E, F, G, H, J}.
+    edge := {(A, B), (A, F), (A, E), (A, D),
+             (B, F), (B, G), (B, C),
+             (C, G), (C, H), (C, D),
+             (D, E), (D, H),
+             (E, H), (E, J), (E, F),
+             (F, G), (F, J),
+             (G, H), (G, J),
+             (H, J)}.
+}
+
+procedure main() {
+    pretty_print(model_expand(T, S))
+}

@@ -1,0 +1,56 @@
+// IDP-Z3 FO(.) Knowledge Editor: https://interactive-consultant.idp-z3.be/IDE
+// Docs: https://docs.idp-z3.be/en/stable/
+// Cheat sheet: https://docs.idp-z3.be/en/stable/summary.html
+
+vocabulary V {
+    type Vertex
+    edge: Vertex * Vertex * Int -> Bool
+    next: Vertex -> Vertex
+    reachable: Vertex -> Bool
+    start: () ->  Vertex
+    cost: () -> Int
+    bound: () -> Int
+}
+
+theory T:V {
+    // Must drive on roads.
+    ! v in Vertex: ? c in Int: edge(v, next(v), c).
+
+    // Must visit every city.
+    ! v in Vertex: reachable(v).
+
+    // Return to start.
+    ? v in Vertex: next(v) = start().
+
+    // Definition reachable:
+    {
+        reachable(start()).
+        ! v in Vertex: reachable(next(v)) <- reachable(v).
+    }
+
+    // Definition and bound on cost:
+    cost() = sum{{ c | (v, next_v, c) in edge : next_v = next(v) }}.
+    cost() < bound().
+}
+
+structure S:V {
+    Vertex := {A, B, C, D, E, F}.
+    start  := E.
+    edge := {
+          (A, B, 3),
+          (A, C, 7),
+          (B, C, 10),
+          (C, F, 20),
+          (D, E, 3),
+          (C, E, 7),
+          (E, D, 10),
+          (D, F, 5),
+          (F, A, 4),
+          (B, D, 4),
+          (F, B, 7)
+    }.
+    bound := 100.
+}
+procedure main() {
+    pretty_print(model_expand(T, S))
+}

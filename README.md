@@ -185,6 +185,8 @@ Entailed by the constraints defining the problem:
 
 ## [5.1. Decompositions](./session5_a-decompositions-problem_aware-solver_aware.ipynb)
 
+[Transformations](https://cpmpy.readthedocs.io/en/latest/#supported-solvers):
+
 1. SMT: decompose globals, e.g. Z3,- if many disjunctive constraints.
 2. CP: flatten, e.g. OR-Tools, Choco,- if many global constraints.
 3. ILP: linearise, e.g. Gurobi,- if many linear constraints.

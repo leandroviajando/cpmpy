@@ -1,0 +1,35 @@
+// IDP-Z3 FO(.) Knowledge Editor: https://interactive-consultant.idp-z3.be/IDE
+// Docs: https://docs.idp-z3.be/en/stable/
+// Cheat sheet: https://docs.idp-z3.be/en/stable/summary.html
+
+vocabulary V {
+	type Player
+	type Group
+	type Week
+	groupsize : () -> Int
+	plays: (Week * Group * Player) -> Bool
+}
+
+theory T:V {
+    // Each golfer should play every week.
+    ! p in Player, w in Week: ? g in Group: plays(w, g, p).
+
+    // The size of each group should be groupsize().
+    ! g in Group, w in Week:
+        #{ p in Player: plays(w, g, p) } = groupsize().
+
+    // Two (distinct!) players should only meet each other at most once.
+    ! p1, p2 in Player: p1 ~= p2 =>
+        #{ g in Group, w in Week: plays(w, g, p1) & plays(w, g, p2) } =< 1.
+}
+
+structure S:V {
+	Player := {1..9}.
+	Group := {1..3}.
+	Week := {1..3}.
+	groupsize := 3.
+}
+
+procedure main() {
+    pretty_print(model_expand(T, S))
+}

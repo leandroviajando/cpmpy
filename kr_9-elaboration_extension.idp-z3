@@ -1,0 +1,59 @@
+// IDP-Z3 FO(.) Knowledge Editor: https://interactive-consultant.idp-z3.be/IDE
+// Docs: https://docs.idp-z3.be/en/stable/
+// Cheat sheet: https://docs.idp-z3.be/en/stable/summary.html
+
+vocabulary V {
+    type Vehicle
+    type Speed := {VerySlow, Slow, Medium, Fast, VeryFast}
+    boat, car, cruiseship, speedboat, volvo: Vehicle -> Bool 
+    safe, abnormalsafe, abnormalspeed: Vehicle -> Bool
+    catamaran, r23: Vehicle -> Bool
+    abSpBSpeed, abSpBSafe: Vehicle -> Bool
+    vehiclespeed: Vehicle -> Speed
+}
+
+theory T:V {
+    // r23s are speedboats.
+    // Definition outside to allow speedboats that are not r23s:
+    ! v in Vehicle: r23(v) => speedboat(v).
+
+    {
+        // Volvos are cars; cruiseships, speedboats are boats.
+        ! v in Vehicle: car(v) <- volvo(v).
+        ! v in Vehicle: boat(v) <- cruiseship(v).
+        ! v in Vehicle: boat(v) <- speedboat(v).
+
+        ! v in Vehicle: boat(v) <- catamaran(v).
+
+        // Normal speed Medium for vehicles.
+        ! v in Vehicle: vehiclespeed(v) = Medium <- ~abnormalspeed(v).
+
+        // Speedboat speed VeryFast. Per exception, there are two rules:
+        ! v in Vehicle: abnormalspeed(v) <- speedboat(v).
+        ! v in Vehicle: vehiclespeed(v) = VeryFast <- speedboat(v) & ~abSpBSpeed(v).
+        ! v in Vehicle: abSpBSpeed(v) <- r23(v).
+        ! v in Vehicle: vehiclespeed(v) = Fast <- r23(v).
+
+        // Normal vehicles are safe.
+        ! v in Vehicle: safe(v) <- ~abnormalsafe(v).
+
+        // Speedboats are exceptions.
+        // They are not safe, but no explicit rule for this is needed.
+        ! v in Vehicle: abnormalsafe(v) <- speedboat(v) & ~abSpBSafe(v).
+        ! v in Vehicle: abnormalsafe(v) <- catamaran(v).
+        ! v in Vehicle: abSpBSafe(v) <- r23(v).
+    }
+}
+
+structure S:V {
+    Vehicle:={cS1, cS2, sB1, sB2, v, c1, r1}.
+    cruiseship:={cS1, cS2}.
+    speedboat:={sB1, sB2, r1}.
+    volvo:={v}.
+    catamaran:={c1}.
+    r23:={r1}.
+}
+
+procedure main() {
+    pretty_print(model_expand(T, S))
+}

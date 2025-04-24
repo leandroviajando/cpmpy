@@ -1,0 +1,36 @@
+// IDP-Z3 FO(.) Knowledge Editor: https://interactive-consultant.idp-z3.be/IDE
+// Docs: https://docs.idp-z3.be/en/stable/
+// Cheat sheet: https://docs.idp-z3.be/en/stable/summary.html
+
+vocabulary V {
+    type Row <: Int
+    type Col <: Int
+    queen: Row * Col -> Bool
+}
+
+theory T: V {
+    // Every row has one queen.
+    // ! r in Row: ? c in Col: queen(r, c).
+    // ! r in Row, c1, c2 in Col: queen(r, c1) & queen(r, c2) => c1 = c2.
+    ! r in Row: #{ c in Col: queen(r, c) } = 1.
+
+    // Every column has one queen.
+    // ! c in Col: ? r in Row: queen(r, c).
+    // ! r1, r2 in Row, c in Col: queen(r1, c) & queen(r2, c) => r1 = r2.
+    ! c in Col: #{ r in Row: queen(r, c) } = 1.
+
+    // Every diagonal has one queen.
+    // ! r1, r2 in Row, c1, c2 in Col:
+    //     queen(r1, c1) & queen(r2, c2) & r1 ~= r2 & c1 ~= c2 => abs(r2 - r1) ~= abs(c2 - c1).
+    ! (r1, c1) in queen:
+        #{ (r2, c2) in queen: abs(r2 - r1) = abs(c2 - c1) } = 1.
+}
+
+structure S:V {
+    Row := {1..8}.
+    Col := {1..8}.
+}
+
+procedure main() {
+    pretty_print(model_expand(T, S, max=100))
+}
